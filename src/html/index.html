@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html ng-app="app">
+  <head>
+    <meta charset="UTF-8">
+  	<title>MusicLib Project</title>
+  		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat|Roboto">
+    	<link rel="stylesheet" href="css/style.css">
+
+  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular-animate.min.js"></script>
+    	<script src="js/app.js"></script>
+
+
+  </head>
+	
+  <body ng-controller="MyController"   >
+
+<!-- pre loader-->
+
+
+
+
+
+
+    <!--======================= Modal editor album ===================================-->
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      	<div class="modal-header">
+		        <button type="button" class="close" ng-click="editorCancel(album)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Album Information</h4>
+	      	</div>
+
+	      	<div class="modal-body">
+	      
+				<div class="form-group" >
+					<input  ng-model="album.title"  placeholder="Title" class="form-control input-md" type="text" required="" >
+			  	</div>
+				
+				<div class="form-group">
+			  		<input name="artist" ng-model="album.artist"  placeholder="Artist" class="form-control input-md" type="text" required="" >
+			  	</div>
+
+			  	<div class="form-group">
+		  			<input  ng-model="album.year" ng-change="validateYear(album.year)" placeholder="Year" class="form-control input-md {{yearClass}}"  type="text" required=""  >
+		  		</div>
+
+				<div class="form-group">
+			  		<input  ng-model="album.company" placeholder="Company" class="form-control input-md" type="text" required="">		  	
+				</div>
+
+				<div class="form-group">
+					<input  ng-model="album.country"   placeholder="Country" class="form-control input-md" type="text" required="">
+				</div>
+
+				<div class="form-group">
+			  		<input  ng-model="album.logoUrl" placeholder="Image url" class="form-control input-md" type="text"  >
+			  	</div>
+
+			   	<div class="form-group">
+			  		<input  ng-model="album.price" ng-change="validatePrice(album.price)"  placeholder="Price" class="form-control input-md {{priceClass}}"  type="text" required="">
+				</div>
+				<!-- buttons-->
+				<div class="form-group">
+			 		<button   class="btn btn-primary" data-dismiss="modal" style="width: 100%" ng-click="editAlbum(album)" ng-if="editButtonShow" ng-disabled="saveButtonDisabled.year || saveButtonDisabled.price"> Edit</button> 
+			    	<button   class="btn btn-default" ng-click="editorCancel(album)" style="width: 100%" data-dismiss="modal">Cansel</button> 
+				</div>
+	        </div>
+
+	    </div>
+	  </div>
+	</div>
+	<!--======================= jumbotron ===================================-->	
+
+	<div class="container ">
+ 		<a name="top"></a>
+		<div class="jumbotron animation-jumbotron" ng-if="!editor.show">
+	  	<h1 class="inside-jumbotron robo-text"><i class="glyphicon glyphicon-music" aria-hidden="true"></i> Welcome To MusicLib! </h1>
+	  	<p class="inside-jumbotron robo-text">View your favorite music albums</p>
+	  	<p class="inside-jumbotron robo-text"><a class="btn btn-default btn-lg" ng-click="showEditor()" role="button">Add new album</a></p>
+	</div>
+
+	<!--========================== add editor ===================================-->
+
+	<form class="form-horizontal  " ng-if="editor.show"   >
+			
+			<!-- Form Name -->
+			<legend class="text-center" style="padding-top: 20px">Album Information</legend>
+
+		<!-- Text input-->
+		<div class="form-group" >
+		  	<label class="col-md-3  col-sm-3 control-label" for="Title">Title</label>  
+		  		<div class="col-md-6 col-sm-6">
+		  			<input  ng-model="album.title"  placeholder="Title" class="form-control input-md" type="text" required="" >
+		  		</div>
+		</div>
+		<!-- Text input-->
+		<div class="form-group">
+		  	<label class="col-md-3 col-sm-3  control-label" for="Artist">Artist / year</label>  
+		  		<div class="col-lg-4 col-md-4 col-sm-4">
+		  			<input name="artist" ng-model="album.artist"  placeholder="Artist" class="form-control input-md" type="text" required="" >
+		  		</div>
+
+	  			<div class="col-lg-2 col-md-2 col-sm-2">
+	  				<input  ng-model="album.year" ng-change="validateYear(album.year)" placeholder="Year" class="form-control input-md {{yearClass}}"  type="text" required=""  >
+	  			</div>
+		</div>
+
+		<!-- Text input-->
+		<div class="form-group">
+		  	<label class="col-md-3 col-sm-3 control-label" for="minQtd">Company / Country</label>  
+		  		<div class="col-md-3 col-sm-3"> 
+		  			<input  ng-model="album.company" placeholder="Company" class="form-control input-md" type="text" required="">
+		  		</div>
+
+				<div class="col-md-3 col-sm-3">
+		  			<input  ng-model="album.country"   placeholder="Country" class="form-control input-md" type="text" required="">
+		  		</div>
+		</div>
+
+		<!-- Text input-->
+		<div class="form-group">
+		  	<label class=" col-md-3 col-sm-3 control-label" for="Country">Image url / Price</label>  
+		  		<div class="col-lg-4 col-md-4 col-sm-4">
+		  			<input  ng-model="album.logoUrl" placeholder="Image url" class="form-control input-md" type="text"  >
+		  		</div>
+
+		   		<div class="col-lg-2 col-md-2 col-sm-2">
+		  			<input  ng-model="album.price" ng-change="validatePrice(album.price)"  placeholder="Price" class="form-control input-md {{priceClass}}"  type="text" required="">
+		  		</div>
+		</div>
+		<!-- buttons-->
+		<div class="form-group">
+		 	 <label class="col-lg-5  col-md-5 col-sm-3 control-label" for="minQtd"></label> 
+
+		  	<div class=" col-lg-2  col-md-2 col-sm-6 ">
+				<button   class="btn btn-default" style="width: 100%" ng-click="addAlbum(album)" 
+				 ng-if="!editButtonShow" ng-disabled="saveButtonDisabled.year || saveButtonDisabled.price">Save</button> 
+				<button   class="btn btn-default" style="width: 100%" ng-click="editAlbum(album)"
+				 ng-if="editButtonShow" ng-disabled="saveButtonDisabled.year || saveButtonDisabled.price">Edit</button> 
+		    	 <button   class="btn btn-default" ng-click="showEditor()" style="width: 100%">Cansel</button> 
+		    	
+		  	</div>
+		</div>
+
+	</form>
+
+
+
+		<div class="row albums-list">
+			<div ng-repeat="album in albums" class="animation">
+		        <div id="album-div" class="col-xs-6 col-sm-3 col-md-2 col-lg-2" >
+		            <div class="thumbnail " ng-mouseenter="showButtons()" ng-mouseleave="hideButtons()" >
+
+		                <a  ng-click="editorRun(album)" data-target="#myModal"  data-toggle="modal"
+		                    class="btn btn-info btn-xs  " id="edit" role="button" ng-show="showButton"><i class="glyphicon glyphicon-edit"  ></i></a> 
+		                <a  class="btn btn-danger btn-xs " id="delete" role="button" 
+		                    ng-click="deleteAlbum(album)" ng-show="showButton"><i class="glyphicon glyphicon-remove" ></i></a> 
+
+			            <img id="logo-image" ng-src={{album.logoUrl}} ng-if="album.logoUrl" >
+			            <img id="logo-image" ng-src="images/url.png"  ng-if="!album.logoUrl">
+
+			            <div class="caption " >
+			         
+			               <p class="title robo-text" title="{{album.title}}">{{$index+1}}.{{album.title}}</p>
+			              
+			                <span class="artist pull-right">{{album.year}}</span>
+				           <p class="artist robo-text">{{album.artist}}</p> 
+
+				           <p class="foot " title="{{album.company}},{{album.country}}">{{album.company}},{{album.country}} </p>   <span class="right pre">{{album.price | number:2 }} $</span>       				          
+			            </div>
+
+			        </div>
+		        </div>
+			</div>
+		</div>
+
+
+
+		<div class="form-group">
+			<label class="col-lg-5  col-md-5 col-sm-3 control-label"  ></label> 
+		  	<div class=" col-lg-2  col-md-2 col-sm-6 " ng-if="upButton">
+				<button   class="btn btn-default" style="width: 100%" ng-click="UP()"> UP</button> 
+		  	</div>
+		</div>
+
+
+	 <a name="bottom"   ></a> 
+	
+
+</body>
+</html>
